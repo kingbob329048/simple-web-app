@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Claw Machine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #gameArea {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            border: 3px solid #333;
+            position: relative;
+            perspective: 800px; /* gives a 3D effect when rotating */
+        }
+
+        .claw {
+            width: 40px;
+            height: 40px;
+            background-color: silver;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            left: 130px;
+            z-index: 2;
+        }
+
+        .prize {
+            width: 30px;
+            height: 30px;
+            background-color: gold;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 20px;
+            left: 135px;
+        }
+
+        #controls {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px;
+            margin: 5px;
+        }
+
+        .view {
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mini Claw Machine</h1>
+    <div id="gameArea">
+        <div class="view" id="view">
+            <div class="claw" id="claw"></div>
+            <div class="prize" id="prize"></div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <button onclick="moveClaw('left')">← Left</button>
+        <button onclick="moveClaw('right')">→ Right</button>
+        <button onclick="grabPrize()">Grab</button>
+        <br>
+        <button onclick="rotateView('left')">⟲ Rotate Left</button>
+        <button onclick="rotateView('right')">⟳ Rotate Right</button>
+    </div>
+
+    <p id="status"></p>
+
+    <script>
+        let claw = document.getElementById("claw");
+        let prize = document.getElementById("prize");
+        let view = document.getElementById("view");
+        let status = document.getElementById("status");
+        let clawPosition = 130; // Starting position (left)
+        let rotationY = 0; // For rotating the view
+
+        // Move claw left or right
+        function moveClaw(direction) {
+            if (direction === "left" && clawPosition > 10) {
+                clawPosition -= 10;
+            } else if (direction === "right" && clawPosition < 250) {
+                clawPosition += 10;
+            }
+            claw.style.left = clawPosition + "px";
+        }
+
+        // Rotate view left or right
+        function rotateView(direction) {
+            if (direction === "left") {
+                rotationY -= 45;
+            } else {
+                rotationY += 45;
+            }
+            view.style.transform = `rotateY(${rotationY}deg)`;
+        }
+
+        // Check if the claw is over the prize
+        function grabPrize() {
+            let clawLeft = claw.offsetLeft;
+            let prizeLeft = prize.offsetLeft;
+            let distance = Math.abs(clawLeft - prizeLeft);
+
+            if (distance < 20) {
+                status.textContent = "🎉 You got the prize!";
+                prize.style.backgroundColor = "green"; // show it's grabbed
+            } else {
+                status.textContent = "❌ Missed! Try again!";
+            }
+        }
+    </script>
+</body>
+</html>
